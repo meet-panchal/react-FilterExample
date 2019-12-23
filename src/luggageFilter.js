@@ -1,7 +1,7 @@
 let luggageFilter = [
   {
     value: 15,
-    isSelected: true
+    isSelected: false
   },
   {
     value: 20,

@@ -5,7 +5,7 @@ let stoppageFilter = [
   },
   {
     value: 1,
-    isSelected: true
+    isSelected: false
   },
   {
     value: 2,

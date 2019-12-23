@@ -2,7 +2,7 @@ let airlinesFilter = [
   {
     code: "TK",
     name: "Türk Hava Yolları",
-    isSelected: true
+    isSelected: false
   },
   {
     code: "AJ",

@@ -1,4 +1,4 @@
-let jsonData = {
+let jsonDataArr = {
   "PC2080:V:2019-09-09 06:15:00": {
     id: "PC2080:V:2019-09-09 06:15:00",
     provider: "project_pi",
@@ -6032,4 +6032,4 @@ let jsonData = {
   }
 };
 
-export default jsonData;
+export default jsonDataArr;

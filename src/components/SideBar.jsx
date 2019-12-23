@@ -14,6 +14,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../Styles/SideBar.css";
 
+let convertJSONToArray = () => {
+  let convertedArray = [];
+  for (let details in wingieFilterJson) {
+    convertedArray.push(wingieFilterJson[details]);
+  }
+  return convertedArray;
+};
+let newArr = convertJSONToArray();
+
 export default class SideBar extends Component {
   /*** State Initialization ***/
   state = {
@@ -25,7 +34,8 @@ export default class SideBar extends Component {
     luggageFilter: luggageFilter,
     stoppageFilter: stoppageFilter,
     airlinesFilter: airlinesFilter,
-    airportFilter: airportFilter
+    airportFilter: airportFilter,
+    superFilteredData: []
   };
 
   /*** State End ***/
@@ -38,11 +48,12 @@ export default class SideBar extends Component {
     let activeObject = this.state.luggageFilter.filter(
       item => item.isSelected === true
     );
+
     activeObject.map(currentobj => {
-      for (let details in this.state.superData) {
-        this.state.superData[details].infos.baggage_info
-          .first_baggage_collection[0].allowance === currentobj.value
-          ? tmpArray.push(this.state.superData[details])
+      for (let details of newArr) {
+        details.infos.baggage_info.first_baggage_collection[0].allowance ===
+        currentobj.value
+          ? tmpArray.push(details)
           : tmpArray.push();
       }
       return currentobj;
@@ -68,12 +79,11 @@ export default class SideBar extends Component {
     let updatedState = this.changeLuggageState(luggageWeight);
     luggageFilteredArray = await this.luggageFilteration(luggageFilteredArray);
     this.setState({
-      luggageFilter: updatedState
+      luggageFilter: updatedState,
+      luggageFilteredArray: luggageFilteredArray,
+      superFilteredData: luggageFilteredArray
     });
-    this.setState({
-      luggageFilteredArray: luggageFilteredArray
-    });
-    console.log(luggageFilteredArray.length);
+    console.log(luggageFilteredArray);
     return luggageFilteredArray.length > 0 ? luggageFilteredArray : null;
   };
 
@@ -88,11 +98,11 @@ export default class SideBar extends Component {
     let chooseData =
       this.state.luggageFilteredArray.length > 0
         ? this.state.luggageFilteredArray
-        : this.state.superData;
+        : newArr;
     activeObject.map(currentobj => {
-      for (let details in chooseData) {
-        this.state.superData[details].segments.length === currentobj.value + 1
-          ? stoppageFilteredArray.push(this.state.superData[details])
+      for (let details of chooseData) {
+        details.segments.length === currentobj.value + 1
+          ? stoppageFilteredArray.push(details)
           : stoppageFilteredArray.push();
       }
       return currentobj;
@@ -117,12 +127,11 @@ export default class SideBar extends Component {
       stoppageFilteredArray
     );
     this.setState({
-      stoppageFilter: finalResult
+      stoppageFilter: finalResult,
+      stoppageFilteredArray: stoppageFilteredArray,
+      superFilteredData: stoppageFilteredArray
     });
-    this.setState({
-      stoppageFilteredArray: stoppageFilteredArray
-    });
-    console.log(stoppageFilteredArray.length);
+    console.log(stoppageFilteredArray);
     return stoppageFilteredArray.length > 0 ? stoppageFilteredArray : null;
   };
 
@@ -132,20 +141,29 @@ export default class SideBar extends Component {
    * Airlines Filter starts
    */
   airlineFilteration = airlineFilteredArray => {
+    let tmpArr = [...airlineFilteredArray];
     let activeObject = this.state.airlinesFilter.filter(
       item => item.isSelected === true
     );
+    let chooseData = [];
+    if (this.state.stoppageFilteredArray.length > 0) {
+      chooseData = this.state.stoppageFilteredArray;
+    } else if (this.state.luggageFilteredArray.length > 0) {
+      chooseData = this.state.luggageFilteredArray;
+    } else {
+      chooseData = newArr;
+    }
     activeObject.map(currentobj => {
-      for (let details in this.state.superData) {
-        this.state.superData[details].segments.forEach(airline => {
+      for (let details of chooseData) {
+        details.segments.forEach(airline => {
           airline["operating_airline"] === currentobj.code
-            ? airlineFilteredArray.push(this.state.superData[details])
-            : airlineFilteredArray.push();
+            ? tmpArr.push(details)
+            : tmpArr.push();
         });
       }
       return currentobj;
     });
-    return airlineFilteredArray;
+    return tmpArr;
   };
 
   changeAirlineState = airlineCode => {
@@ -163,10 +181,9 @@ export default class SideBar extends Component {
     let finalResult = this.changeAirlineState(airlineCode);
     airlineFilteredArray = await this.airlineFilteration(airlineFilteredArray);
     this.setState({
-      airlinesFilter: finalResult
-    });
-    this.setState({
-      airlineFilteredArray: airlineFilteredArray
+      airlinesFilter: finalResult,
+      airlineFilteredArray: airlineFilteredArray,
+      superFilteredData: airlineFilteredArray
     });
     console.log(airlineFilteredArray);
     return airlineFilteredArray.length > 0 ? airlineFilteredArray : null;
@@ -182,12 +199,20 @@ export default class SideBar extends Component {
     let activeObject = this.state.airportFilter.filter(
       item => item.isSelected === true
     );
+    let chooseData =
+      this.state.airlineFilteredArray.length > 0
+        ? this.state.airlineFilteredArray
+        : this.state.stoppageFilteredArray.length > 0
+        ? this.state.stoppageFilteredArray
+        : this.state.luggageFilteredArray.length > 0
+        ? this.state.luggageFilteredArray
+        : newArr;
     activeObject.map(currentobj => {
-      for (let details in this.state.superData) {
-        this.state.superData[details].segments.forEach(airport => {
+      for (let details of chooseData) {
+        details.segments.forEach(airport => {
           airport["origin"] === currentobj.airport_code ||
           airport["destination"] === currentobj.airport_code
-            ? airportFilteredArray.push(this.state.superData[details])
+            ? airportFilteredArray.push(details)
             : airportFilteredArray.push();
         });
       }
@@ -211,19 +236,18 @@ export default class SideBar extends Component {
     let finalResult = this.changeAirportState(airportCode);
     airportFilteredArray = await this.airportFilteration(airportFilteredArray);
     this.setState({
-      airportFilter: finalResult
-    });
-    this.setState({
-      airportFilteredArray: airportFilteredArray
+      airportFilter: finalResult,
+      airportFilteredArray: airportFilteredArray,
+      superFilteredData: airportFilteredArray
     });
     console.log(airportFilteredArray);
-    return airportFilteredArray.length > 0 ? airportFilteredArray : null;
+    // return airportFilteredArray.length > 0 ? airportFilteredArray : null;
   };
   /**
    * Airports Filter End
    */
   render() {
-    // console.log(this.stopsFilterate());
+    // this.convertJSONToArray();
     return (
       <div>
         <div>
@@ -298,7 +322,6 @@ export default class SideBar extends Component {
             ))}
           </ul>
         </div>
-
         <div>
           <ul className="filters">
             {this.state.airportFilter.map((item, index) => (
@@ -311,6 +334,13 @@ export default class SideBar extends Component {
                 <FontAwesomeIcon icon={faHotel} className="mx-3" />
                 {item.airport_name}
               </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <ul className="filters">
+            {this.state.superFilteredData.map((item, index) => (
+              <li key={item.airport_code}>{item.id}</li>
             ))}
           </ul>
         </div>
