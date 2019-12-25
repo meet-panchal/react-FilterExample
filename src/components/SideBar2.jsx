@@ -34,12 +34,12 @@ export default class SideBar2 extends Component {
   };
 
   filterByLuggage = mainArr => {
-    let tmpArray = [];
     let activeObject = localState.luggageFilter.filter(
       item => item.isSelected === true
     );
 
     if (activeObject.length > 0) {
+      let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
           details.infos.baggage_info.first_baggage_collection[0].allowance ===
@@ -56,11 +56,11 @@ export default class SideBar2 extends Component {
   };
 
   filterByStoppage = mainArr => {
-    let tmpArray = [];
     let activeObject = localState.stoppageFilter.filter(
       item => item.isSelected === true
     );
     if (activeObject.length > 0) {
+      let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
           details.segments.length === currentobj.value + 1
@@ -76,11 +76,11 @@ export default class SideBar2 extends Component {
   };
 
   filterByAirline = mainArr => {
-    let tmpArray = [];
     let activeObject = localState.airlinesFilter.filter(
       item => item.isSelected === true
     );
     if (activeObject.length > 0) {
+      let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
           details.segments.forEach(airline => {
@@ -97,11 +97,11 @@ export default class SideBar2 extends Component {
     }
   };
   filterByAirport = mainArr => {
-    let tmpArray = [];
     let activeObject = localState.airportFilter.filter(
       item => item.isSelected === true
     );
     if (activeObject.length > 0) {
+      let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
           details.segments.forEach(airport => {
@@ -270,6 +270,7 @@ export default class SideBar2 extends Component {
           </ul>
         </div>
         <div>
+          <h2 className="mx-4">{this.state.finalFilteredData.length}</h2>
           <ul className="filters">
             {this.state.finalFilteredData.map((item, index) => (
               <li key={item.id}>{item.id}</li>

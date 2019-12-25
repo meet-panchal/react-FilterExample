@@ -338,6 +338,7 @@ export default class SideBar extends Component {
           </ul>
         </div>
         <div>
+          <h2>{this.state.superFilteredData.length}</h2>
           <ul className="filters">
             {this.state.superFilteredData.map((item, index) => (
               <li key={item.airport_code}>{item.id}</li>
