@@ -30,7 +30,7 @@ let arrayData = convertJSONToArray();
 
 export default class SideBar2 extends Component {
   state = {
-    finalFilteredData: []
+    finalFilteredData: arrayData
   };
 
   filterByLuggage = mainArr => {
