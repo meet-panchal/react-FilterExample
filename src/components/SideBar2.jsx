@@ -42,10 +42,12 @@ export default class SideBar2 extends Component {
       let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
-          details.infos.baggage_info.first_baggage_collection[0].allowance ===
-          currentobj.value
-            ? tmpArray.push(details)
-            : tmpArray.push();
+          if (
+            details.infos.baggage_info.first_baggage_collection[0].allowance ===
+            currentobj.value
+          ) {
+            tmpArray.push(details);
+          }
         }
         return currentobj;
       });
@@ -63,9 +65,9 @@ export default class SideBar2 extends Component {
       let tmpArray = [];
       activeObject.map(currentobj => {
         for (let details of mainArr) {
-          details.segments.length === currentobj.value + 1
-            ? tmpArray.push(details)
-            : tmpArray.push();
+          if (details.segments.length === currentobj.value + 1) {
+            tmpArray.push(details);
+          }
         }
         return currentobj;
       });
@@ -129,8 +131,9 @@ export default class SideBar2 extends Component {
     const airlineFilteredArray = this.filterByAirline(stoppageFilteredArray);
     const airportFilteredArray = this.filterByAirport(airlineFilteredArray);
 
+    let uniquefinalFilteredData = [...new Set(airportFilteredArray)];
     this.setState({
-      finalFilteredData: airportFilteredArray
+      finalFilteredData: uniquefinalFilteredData
     });
   };
 
@@ -271,11 +274,11 @@ export default class SideBar2 extends Component {
         </div>
         <div>
           <h2 className="mx-4">{this.state.finalFilteredData.length}</h2>
-          <ul className="filters">
+          <ol>
             {this.state.finalFilteredData.map((item, index) => (
               <li key={item.id}>{item.id}</li>
             ))}
-          </ul>
+          </ol>
         </div>
       </div>
     );
