@@ -192,6 +192,7 @@ export default class SideBar2 extends Component {
   };
 
   render() {
+    console.log(localState);
     return (
       <div>
         <div>
@@ -253,6 +254,7 @@ export default class SideBar2 extends Component {
             ))}
           </ul>
         </div>
+
         <div>
           <ul className="filters">
             {localState.airportFilter.map((item, index) => (
@@ -272,6 +274,7 @@ export default class SideBar2 extends Component {
             ))}
           </ul>
         </div>
+
         <div>
           <h2 className="mx-4">{this.state.finalFilteredData.length}</h2>
           <ol>
